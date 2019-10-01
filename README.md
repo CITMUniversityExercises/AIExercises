@@ -1,0 +1,2 @@
+# AIExercises
+AI subject exercises
