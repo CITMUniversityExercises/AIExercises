@@ -12,16 +12,21 @@ public class KinematicWander : MonoBehaviour {
 		move = GetComponent<Move>();
 	}
 
+	// number [-1,1] values around 0 more likely
+	float RandomBinominal()
+	{
+		return Random.value * Random.value;
+	}
+	
 	// Update is called once per frame
 	void Update () 
 	{
-        // TODO 9: Generate a velocity vector in a random rotation (use RandomBinominal) and some attenuation factor
-        float angle = 0;
-        Vector3 axis = Vector3.zero;
-        Random.rotation.ToAngleAxis(out angle, out axis);
+		// random rotation
+		float angle = RandomBinominal() * max_angle;
+		Vector3 velocity = Quaternion.AngleAxis(Mathf.Rad2Deg * angle, Vector3.up) * Vector3.forward;
 
-        //Vector3 direction = Mathf.Tan(angle);
+		velocity *= move.max_mov_speed;
 
-        //move.SetMovementVelocity();
+		move.SetMovementVelocity (velocity);
 	}
 }

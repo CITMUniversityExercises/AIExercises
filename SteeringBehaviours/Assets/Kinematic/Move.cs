@@ -7,72 +7,62 @@ public class Move : MonoBehaviour {
 	public GameObject target;
 	public GameObject aim;
 	public Slider arrow;
-	public float max_mov_velocity = 5.0f;
 
-	public Vector3 mov_velocity = Vector3.zero;
+	public float max_mov_speed = 5.0f;
+	public float max_mov_acceleration = 0.1f;
+	public float max_rot_speed = 10.0f; // in degrees / second
+	public float max_rot_acceleration = 0.1f; // in degrees
 
-	// Use this for initialization
-	public void SetMovementVelocity (Vector3 vel) {
-		mov_velocity = vel;
+	[Header("-------- Read Only --------")]
+	public Vector3 movement = Vector3.zero;
+	public float rotation = 0.0f; // degrees
+
+	// Methods for behaviours to set / add velocities
+	public void SetMovementVelocity (Vector3 velocity) 
+	{
+		movement = velocity;
 	}
 
+	public void AccelerateMovement (Vector3 velocity) 
+	{
+		movement += velocity;
+	}
+
+	public void SetRotationVelocity (float rotation_velocity) 
+	{
+		rotation = rotation_velocity;
+	}
+
+	public void AccelerateRotation (float rotation_acceleration) 
+	{
+		rotation += rotation_acceleration;
+	}
+	
 	// Update is called once per frame
 	void Update () 
 	{
+		// cap velocity
+		if(movement.magnitude > max_mov_speed)
+		{
+			movement.Normalize();
+			movement *= max_mov_speed;
+		}
 
-        // TODO 2: Make sure mov_velocity is never bigger that max_mov_velocity
-        if(mov_velocity.magnitude > max_mov_velocity)
-        {
-            mov_velocity.Normalize();
-            mov_velocity *= max_mov_velocity;
-        }
+		// cap rotation
+		Mathf.Clamp(rotation, -max_rot_speed, max_rot_speed);
 
-        // TODO 3: rotate the arrow to point to mov_velocity direction. First find out the angle
-        // then create a Quaternion with that expressed that rotation and apply it to aim.transform
-        float angle = Mathf.Atan2((float)mov_velocity.x, (float)mov_velocity.z);
-        aim.transform.rotation = Quaternion.AngleAxis(Mathf.Rad2Deg*angle,Vector3.up);
+		// rotate the arrow
+		float angle = Mathf.Atan2(movement.x, movement.z);
+		aim.transform.rotation = Quaternion.AngleAxis(Mathf.Rad2Deg * angle, Vector3.up);
 
+		// strech it
+		arrow.value = movement.magnitude * 4;
 
-        //// TODO 4: stretch it the arrow (arrow.value) to show how fast the tank is getting push in
-        //// that direction. Adjust with some factor so the arrow is visible.
-        arrow.value = mov_velocity.magnitude/max_mov_velocity*20;
+		// final rotate
+		transform.rotation *= Quaternion.AngleAxis(rotation * Time.deltaTime, Vector3.up);
 
-        //// TODO 5: update tank position based on final mov_velocity and deltatime
-        mov_velocity.y = 0.0f;
-        transform.position += mov_velocity * Time.deltaTime;
-
-        //// Reset movement to 0 to simplify things ...
-        mov_velocity = Vector3.zero;
-
-
-
-
-
-
-
-
-        //// TODO 2: Make sure mov_velocity is never bigger that max_mov_velocity
-        //if (mov_velocity.magnitude > max_mov_velocity)
-        //{
-        //    mov_velocity.Normalize();
-        //    mov_velocity *= max_mov_velocity;
-        //}
-
-        //// TODO 3: rotate the arrow to point to mov_velocity direction. First find out the angle
-        //// then create a Quaternion with that expressed that rotation and apply it to aim.transform
-        //float angle = Mathf.Atan2(mov_velocity.x, mov_velocity.z);
-        //aim.transform.rotation = Quaternion.AngleAxis(Mathf.Rad2Deg * angle, Vector3.up);
-
-
-        //// TODO 4: stretch it the arrow (arrow.value) to show how fast the tank is getting push in
-        //// that direction. Adjust with some factor so the arrow is visible.
-        //arrow.value = mov_velocity.magnitude * 4;
-
-        //// TODO 5: update tank position based on final mov_velocity and deltatime
-        //mov_velocity.y = 0.0f;
-        //transform.position += mov_velocity * Time.deltaTime;
-
-        //// Reset movement to 0 to simplify things ...
-        //mov_velocity = Vector3.zero;
-    }
+        // finally move
+        movement.y = 0.0f;
+		transform.position += movement * Time.deltaTime;
+	}
 }
