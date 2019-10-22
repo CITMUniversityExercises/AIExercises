@@ -2,7 +2,8 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class Move : MonoBehaviour {
+public class Move : MonoBehaviour
+{
 
 	public GameObject target;
 	public GameObject aim;
@@ -16,32 +17,68 @@ public class Move : MonoBehaviour {
 	public Vector3 current_velocity = Vector3.zero;
 	public float current_rotation_speed = 0.0f; // degrees
 
-	// Methods for behaviours to set / add velocities
-	public void SetMovementVelocity (Vector3 velocity) 
+    Vector3[] movement_velocity;
+    float[] rotation_speed;
+
+    private void Start()
+    {
+        movement_velocity = new Vector3[5];
+        movement_velocity.Initialize();
+
+        rotation_speed = new float[5];
+        rotation_speed.Initialize();
+
+    }
+
+    // Methods for behaviours to set / add velocities
+    public void SetMovementVelocity (Vector3 velocity) 
 	{
         current_velocity = velocity;
-	}
+    }
 
-	public void AccelerateMovement (Vector3 acceleration) 
+	public void AccelerateMovement (Vector3 acceleration, int priority) 
 	{
         current_velocity += acceleration;
-	}
+        movement_velocity.SetValue(current_velocity, priority);
+    }
 
 	public void SetRotationVelocity (float rotation_speed) 
 	{
         current_rotation_speed = rotation_speed;
 	}
 
-	public void AccelerateRotation (float rotation_acceleration) 
+	public void AccelerateRotation (float rotation_acceleration, int priority) 
 	{
         current_rotation_speed += rotation_acceleration;
-	}
+        rotation_speed.SetValue(current_rotation_speed, priority);
+    }
 	
 	// Update is called once per frame
 	void Update () 
 	{
-		// cap velocity
-		if(current_velocity.magnitude > max_mov_speed)
+
+        // --- Assign Velocity and Rotation according to priority lists ---
+        for (int i = 0; i < movement_velocity.Length; ++i)
+        {
+            if (!Mathf.Approximately(movement_velocity[i].x, Vector3.zero.x)
+                || !Mathf.Approximately(movement_velocity[i].y, Vector3.zero.y)
+                || !Mathf.Approximately(movement_velocity[i].z, Vector3.zero.z))
+            {
+                current_velocity = movement_velocity[i];
+                break;
+            }
+        }
+        for (int i = 0; i < rotation_speed.Length; ++i)
+        {
+            if (!Mathf.Approximately(rotation_speed[i], 0.0f))
+            {
+                current_rotation_speed = rotation_speed[i];
+                break;
+            }
+        }
+
+            // cap velocity
+            if (current_velocity.magnitude > max_mov_speed)
 		{
             current_velocity = current_velocity.normalized * max_mov_speed;
 		}
@@ -61,5 +98,9 @@ public class Move : MonoBehaviour {
 
 		// finally move
 		transform.position += current_velocity * Time.deltaTime;
+
+        // --- Reset velocities array ---
+        movement_velocity.Initialize();
+        rotation_speed.Initialize();
 	}
 }
