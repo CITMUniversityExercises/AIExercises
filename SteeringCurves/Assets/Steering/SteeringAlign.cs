@@ -4,43 +4,53 @@ using System.Collections;
 public class SteeringAlign : SteeringAbstract
 {
 
-	public float min_angle = 0.01f;
-	public float slow_angle = 0.1f;
-	public float time_to_accel = 0.1f;
+    public float min_angle = 0.01f;
+    public float slow_angle = 0.1f;
+    public float time_to_target = 0.1f;
 
-	Move move;
+    Move move;
 
-	// Use this for initialization
-	void Start () {
-		move = GetComponent<Move>();
-	}
+    // Use this for initialization
+    void Start()
+    {
+        move = GetComponent<Move>();
+    }
 
-	// Update is called once per frame
-	void Update () 
-	{
-		// Orientation we are trying to match
-        float delta_angle = Vector3.SignedAngle(transform.forward, move.target.transform.forward, new Vector3(0.0f, 1.0f, 0.0f));
+    // Update is called once per frame
+    void Update()
+    {
+        // TODO 7: Very similar to arrive, but using angular velocities
+        // Find the desired rotation and accelerate to it
+        // Use Vector3.SignedAngle() to find the angle between two directions
+        // Orientation we are trying to match
 
+        float current_orientation = Mathf.Rad2Deg * Mathf.Atan2(transform.forward.x, transform.forward.z);
+        float target_orientation = current_orientation + Vector3.SignedAngle(move.target.transform.position - move.transform.position, transform.forward, Vector3.up);
+        float angle = -Mathf.DeltaAngle(current_orientation, target_orientation);
 
-        float diff_absolute = Mathf.Abs(delta_angle);
+        if (Mathf.Abs(angle) < min_angle)
+        {
+            move.SetRotationVelocity(0.0f);
+        }
+        else
+        {
+            float desired_rotation = 0.0f;
+            float slow_factor = Mathf.Abs(angle) / slow_angle;
 
-		if(diff_absolute < min_angle)
-		{
-			move.SetRotationVelocity(0.0f);
-			return;
-		}
+            if (Mathf.Abs(angle) > slow_angle)
+                desired_rotation = move.max_rot_speed;
+            else
+                desired_rotation = move.max_rot_speed * slow_factor;
 
-        float ideal_rotation_speed = move.max_rot_speed;
+            float acceleration = desired_rotation / time_to_target;
 
-        if (diff_absolute < slow_angle)
-            ideal_rotation_speed *= (diff_absolute / slow_angle);
+            if (angle < slow_angle)
+            {
+                acceleration = -acceleration;
+            }
+            move.AccelerateRotation(Mathf.Clamp(acceleration, -move.max_rot_acceleration, move.max_rot_acceleration),priority);
 
-		float angular_acceleration = ideal_rotation_speed / time_to_accel;
+        }
 
-        //Invert rotation direction if the angle is negative
-		if(delta_angle < 0)
-			angular_acceleration = -angular_acceleration;
-
-		move.AccelerateRotation(Mathf.Clamp(angular_acceleration, -move.max_rot_acceleration, move.max_rot_acceleration),priority);
-	}
+    }
 }

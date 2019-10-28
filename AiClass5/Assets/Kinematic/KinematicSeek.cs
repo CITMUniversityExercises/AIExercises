@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class KinematicFlee : SteeringAbstract
-{
+public class KinematicSeek : MonoBehaviour {
 
 	Move move;
 
@@ -14,8 +13,9 @@ public class KinematicFlee : SteeringAbstract
 	// Update is called once per frame
 	void Update () 
 	{
-		Vector3 diff = transform.position - move.target.transform.position;
-		diff = diff.normalized * move.max_mov_speed;
+		Vector3 diff = move.target.transform.position - transform.position;
+		diff.Normalize ();
+		diff *= move.max_mov_speed;
 
 		move.SetMovementVelocity(diff);
 	}

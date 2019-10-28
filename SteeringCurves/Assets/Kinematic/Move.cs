@@ -42,10 +42,18 @@ public class Move : MonoBehaviour
         movement_velocity.SetValue(current_velocity, priority);
     }
 
-	public void SetRotationVelocity (float rotation_speed) 
+	public void SetRotationVelocity (float _rotation_speed) 
 	{
-        current_rotation_speed = rotation_speed;
-	}
+        current_rotation_speed = _rotation_speed;
+
+        for (int i = 0; i < rotation_speed.Length; ++i)
+        {
+            if (!Mathf.Approximately(rotation_speed[i], 0.0f))
+            {
+                rotation_speed[i] = current_rotation_speed;
+            }
+        }
+    }
 
 	public void AccelerateRotation (float rotation_acceleration, int priority) 
 	{
@@ -78,7 +86,7 @@ public class Move : MonoBehaviour
         }
 
             // cap velocity
-            if (current_velocity.magnitude > max_mov_speed)
+        if (current_velocity.magnitude > max_mov_speed)
 		{
             current_velocity = current_velocity.normalized * max_mov_speed;
 		}

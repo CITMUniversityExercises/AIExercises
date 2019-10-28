@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class KinematicWander : SteeringAbstract
-{
+public class KinematicWander : MonoBehaviour {
 
 	public float max_angle = 0.5f;
 
@@ -28,6 +27,6 @@ public class KinematicWander : SteeringAbstract
 
 		velocity *= move.max_mov_speed;
 
-		move.SetMovementVelocity(velocity);
+		move.SetMovementVelocity (velocity);
 	}
 }

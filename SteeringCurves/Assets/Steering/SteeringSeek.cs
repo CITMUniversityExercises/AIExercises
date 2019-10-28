@@ -4,28 +4,33 @@ using System.Collections;
 public class SteeringSeek : SteeringAbstract
 {
 
-	Move move;
+    Move move;
+    public float stop_distance = 1.0f;
 
-	// Use this for initialization
-	void Start () {
-		move = GetComponent<Move>(); 
-	}
-	
-	// Update is called once per frame
-	void Update () 
-	{
-		Steer(move.target.transform.position);
-	}
+    // Use this for initialization
+    void Start()
+    {
+        move = GetComponent<Move>();
+    }
 
-	public void Steer(Vector3 target)
-	{
-		if(!move)
-			move = GetComponent<Move>();
+    // Update is called once per frame
+    void Update()
+    {
+        Steer(move.target.transform.position);
+    }
 
-		Vector3 diff = target - transform.position;
-		diff.Normalize ();
-		diff *= move.max_mov_acceleration;
+    public void Steer(Vector3 target)
+    {
+        if (move == null)
+        {
+            move = GetComponent<Move>();
+        }
 
-		move.AccelerateMovement(diff,priority);
-	}
+        // TODO 1: accelerate towards our target at max_acceleration
+        // use move.AccelerateMovement()
+        Vector3 velocity = ((target - transform.position).normalized * move.max_mov_acceleration);
+
+        move.AccelerateMovement(velocity,priority);
+
+    }
 }

@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class KinematicArrive : SteeringAbstract
-{
+public class KinematicArrive : MonoBehaviour {
 
 	public float min_distance = 0.1f;
 	public float time_to_target = 0.25f;

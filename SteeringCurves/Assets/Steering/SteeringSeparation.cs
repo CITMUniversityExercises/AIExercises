@@ -4,50 +4,60 @@ using System.Collections;
 public class SteeringSeparation : SteeringAbstract
 {
 
-	public LayerMask mask;
-	public float search_radius = 5.0f;
-	public AnimationCurve falloff;
+    public LayerMask mask;
+    public float search_radius = 5.0f;
+    public AnimationCurve strength;
 
-	Move move;
+    Move move;
 
-	// Use this for initialization
-	void Start () {
-		move = GetComponent<Move>();
-	}
-
-	// Update is called once per frame
-    void Update () 
+    // Use this for initialization
+    void Start()
     {
-        Collider[] colliders = Physics.OverlapSphere(transform.position, search_radius, mask);
-        Vector3 final = Vector3.zero;
+        move = GetComponent<Move>();
+    }
 
-        foreach(Collider col in colliders)
+    // Update is called once per frame
+    void Update()
+    {
+        // TODO 1: Agents much separate from each other:
+        // 1- Find other agents in the vicinity (use a layer for all agents)
+        Collider[] Colliders = Physics.OverlapSphere(transform.position, search_radius, mask);
+        // 2- For each of them calculate a escape vector using the AnimationCurve
+
+        Vector3 Desired_acceleration = Vector3.zero;
+
+        for (int i = 0; i < Colliders.Length; ++i)
         {
-            GameObject go = col.gameObject;
+            GameObject GO = Colliders[i].gameObject;
 
-            if(go == gameObject) 
+            // --- Do not evaluate ourselves ---
+            if (GO == gameObject)
                 continue;
 
-            Vector3 diff = transform.position - go.transform.position;
-            float distance = diff.magnitude;
-            float acceleration = (1.0f - falloff.Evaluate(distance / search_radius)) * move.max_mov_acceleration;
+            // --- Distance between us and another object ---
+            Vector3 distance = transform.position - GO.transform.position;
 
-            final += diff.normalized * acceleration;
+            // --- Find Separation Acceleration strength using the curve ---
+            float Acceleration = (1.0f - strength.Evaluate(distance.magnitude / search_radius)) * move.max_mov_acceleration;
+
+            // 3- Sum up all vectors and trim down to maximum acceleration
+            Desired_acceleration += distance.normalized * Acceleration;
         }
-
-        float final_strength = final.magnitude;
-        if(final_strength > 0.0f)
+        // 3- Trim down to maximum acceleration
+        if (Desired_acceleration.magnitude > 0.0f)
         {
-            if(final_strength > move.max_mov_acceleration)
-                final = final.normalized * move.max_mov_acceleration;
-            move.AccelerateMovement(final,priority);
+            if (Desired_acceleration.magnitude > move.max_mov_acceleration)
+                Desired_acceleration = Desired_acceleration.normalized * move.max_mov_acceleration;
+
+            move.AccelerateMovement(Desired_acceleration, priority);
         }
     }
 
-	void OnDrawGizmosSelected() 
-	{
-		// Display the explosion radius when selected
-		Gizmos.color = Color.yellow;
-		Gizmos.DrawWireSphere(transform.position, search_radius);
-	}
+    void OnDrawGizmosSelected()
+    {
+        // Display the explosion radius when selected
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, search_radius);
+    }
+
 }
