@@ -8,7 +8,6 @@ public class FollowPath : SteeringAbstract
     public GameObject target;
     Vector3 last_target_position;
 
-    NavMeshAgent agent;
     NavMeshPath path;
 
     Vector3 waypoint;
@@ -20,7 +19,6 @@ public class FollowPath : SteeringAbstract
     void Start()
     {
         path = new NavMeshPath();
-        agent = GetComponent<NavMeshAgent>();
         seek = GetComponent<SteeringSeek>();
         last_target_position = target.transform.position;
         waypoint = transform.position;
@@ -31,7 +29,7 @@ public class FollowPath : SteeringAbstract
     {
         if (last_target_position != target.transform.position)
         {
-            agent.CalculatePath(target.transform.position, path);
+            NavMesh.CalculatePath(transform.position,target.transform.position, NavMesh.AllAreas,path);
             index = 0;
             waypoint = path.corners[index];
             
