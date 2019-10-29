@@ -4,22 +4,24 @@ using UnityEngine;
 
 public class SphereTest : MonoBehaviour
 {
-    public LayerMask mask;
-    public float search_radius = 5.0f;
+    public LayerMask Agent_mask;
+    public LayerMask Raycast_mask;
     public Camera camera;
+    private float radius = 0;
 
     // Start is called before the first frame update
     void Start()
     {
         camera = GetComponent<Camera>();
+        radius = camera.farClipPlane / 2;
     }
 
     // Update is called once per frame
     void Update()
     {
+        radius = camera.farClipPlane/2;
 
-        // 1- Find other agents in the vicinity (use a layer for all agents)
-        Collider[] Colliders = Physics.OverlapSphere(transform.position, search_radius, mask);
+        Collider[] Colliders = Physics.OverlapSphere(transform.position + transform.forward*(radius + camera.nearClipPlane), radius, Agent_mask);
 
         for (int i = 0; i < Colliders.Length; ++i)
         {
@@ -31,26 +33,31 @@ public class SphereTest : MonoBehaviour
 
             if (GeometryUtility.TestPlanesAABB(GeometryUtility.CalculateFrustumPlanes(camera), GO.GetComponent<BoxCollider>().bounds))
             {
-                //RaycastHit ray_hit;
+                RaycastHit ray_hit;
 
-
-
-                //if (Physics.Raycast(transform.position + GeometryUtility.CalculateFrustumPlanes(camera)[0], destination, out ray_hit, maxDistance, mask))
-                //{
-
+                if (Physics.Raycast(transform.position + transform.forward*camera.nearClipPlane, GO.transform.position - transform.position + transform.forward * camera.nearClipPlane, out ray_hit, camera.farClipPlane, Raycast_mask))
+                {
+                    if(ray_hit.collider.tag == "Visual Emitter")
                     Debug.Log("Tank on sight");
-                //}
+                }
+
             }
 
         }
     }
 
+    private void OnDrawGizmos()
+    {
+        // Display the explosion radius when selected
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position + transform.forward * (radius + camera.nearClipPlane), radius);
+    }
 
     void OnDrawGizmosSelected()
     {
         // Display the explosion radius when selected
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, search_radius);
+        //Gizmos.color = Color.yellow;
+        //Gizmos.DrawWireSphere(transform.position + transform.forward * radius, radius);
     }
 
 }

@@ -395,7 +395,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 6e4d8dfe03882c54380948659f725233, type: 3}
       propertyPath: m_Layer
-      value: 9
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 6e4d8dfe03882c54380948659f725233, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1173,7 +1173,7 @@ GameObject:
   - component: {fileID: 362451115}
   - component: {fileID: 362451114}
   - component: {fileID: 362451113}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Ramp (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1470,10 +1470,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f484521ad7d339247bed02bc59d6f38e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mask:
+  Agent_mask:
     serializedVersion: 2
     m_Bits: 256
-  search_radius: 15
+  Raycast_mask:
+    serializedVersion: 2
+    m_Bits: 257
   camera: {fileID: 384830319}
 --- !u!54 &384830321
 Rigidbody:
@@ -1719,7 +1721,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 100002, guid: f698f69d64c51f8438d853e5c274e5fc, type: 3}
       propertyPath: m_Layer
-      value: 9
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 100002, guid: f698f69d64c51f8438d853e5c274e5fc, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -3037,10 +3039,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f484521ad7d339247bed02bc59d6f38e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mask:
+  Agent_mask:
     serializedVersion: 2
     m_Bits: 256
-  search_radius: 15
+  Raycast_mask:
+    serializedVersion: 2
+    m_Bits: 257
   camera: {fileID: 925723628}
 --- !u!114 &925723627
 MonoBehaviour:
@@ -5433,7 +5437,7 @@ GameObject:
   - component: {fileID: 1584348597}
   - component: {fileID: 1584348596}
   - component: {fileID: 1584348595}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Ramp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6186,7 +6190,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 100000, guid: e307cb54b57a59342868ad47d1ed0c30, type: 3}
       propertyPath: m_Layer
-      value: 9
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: e307cb54b57a59342868ad47d1ed0c30, type: 3}
       propertyPath: m_StaticEditorFlags
