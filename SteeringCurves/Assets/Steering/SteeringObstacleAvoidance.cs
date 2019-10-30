@@ -53,9 +53,8 @@ public class SteeringObstacleAvoidance : SteeringAbstract
                 Vector3 target = new Vector3(ray_hit.point.x, transform.position.y, ray_hit.point.z);
 
                 // Direction: 
-                target += (transform.forward - ray_hit.collider.transform.position).normalized * avoid_distance;
-              
-                // Move
+                target = (destination - ray_hit.collider.transform.position).normalized * avoid_distance;
+
                 seek.Steer(target, priority);
             }
         }
