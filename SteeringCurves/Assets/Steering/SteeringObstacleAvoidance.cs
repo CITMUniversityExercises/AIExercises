@@ -47,14 +47,14 @@ public class SteeringObstacleAvoidance : SteeringAbstract
             // --- Check if the ray hits a collider ---
             if (Physics.Raycast(origin, destination, out ray_hit, maxDistance, mask))
             {
-                // --- If we hit a collider, head towards the ray's normal direction to evade ---
+                // --- If we hit a collider, compute evasion vector  ---
 
                 // origin
                 Vector3 target = new Vector3(ray_hit.point.x, transform.position.y, ray_hit.point.z);
 
-                // Direction
-                target += ray_hit.normal * avoid_distance;
-
+                // Direction: 
+                target += (transform.forward - ray_hit.collider.transform.position).normalized * avoid_distance;
+              
                 // Move
                 seek.Steer(target, priority);
             }

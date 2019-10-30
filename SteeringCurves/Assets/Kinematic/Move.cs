@@ -42,6 +42,9 @@ public class Move : MonoBehaviour
 
 	public void AccelerateMovement (Vector3 acceleration, int priority) 
 	{
+        if (acceleration.magnitude > max_mov_acceleration)
+            acceleration = acceleration.normalized * max_mov_acceleration;
+
         acceleration.y = 0.0f;
 
         movement_velocity[priority] += acceleration;
@@ -57,6 +60,9 @@ public class Move : MonoBehaviour
 
 	public void AccelerateRotation (float rotation_acceleration, int priority) 
 	{
+        if (rotation_acceleration > max_rot_acceleration)
+            rotation_acceleration = max_rot_acceleration;
+
         rotation_speed[priority] += rotation_acceleration; 
     }
 	
@@ -85,10 +91,8 @@ public class Move : MonoBehaviour
         }
 
         // cap velocity
-  //      if (current_velocity.magnitude > max_mov_speed)
-		//{
-  //          current_velocity = current_velocity.normalized * max_mov_speed;
-		//}
+        current_velocity.x = Mathf.Clamp(current_velocity.x,-max_mov_speed, max_mov_speed);
+        current_velocity.z = Mathf.Clamp(current_velocity.z, -max_mov_speed, max_mov_speed);
 
         // cap rotation
         current_rotation_speed = Mathf.Clamp(current_rotation_speed, -max_rot_speed, max_rot_speed);
