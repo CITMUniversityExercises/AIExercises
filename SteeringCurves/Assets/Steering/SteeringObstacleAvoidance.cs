@@ -56,7 +56,7 @@ public class SteeringObstacleAvoidance : SteeringAbstract
                 target += ray_hit.normal * avoid_distance;
 
                 // Move
-                seek.Steer(target);
+                seek.Steer(target, priority);
             }
         }
     }

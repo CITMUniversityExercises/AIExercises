@@ -48,7 +48,7 @@ public class SteeringAlign : SteeringAbstract
             {
                 acceleration = -acceleration;
             }
-            move.AccelerateRotation(Mathf.Clamp(acceleration, -move.max_rot_acceleration, move.max_rot_acceleration),priority);
+            move.AccelerateRotation(acceleration,priority);
 
         }
 

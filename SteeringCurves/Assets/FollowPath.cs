@@ -12,8 +12,8 @@ public class FollowPath : SteeringAbstract
 
     Vector3 waypoint;
     SteeringSeek seek;
-    public float Min_distance = 1.0f;
-    int index = 0;
+    public float Min_distance = 5.0f;
+    int index = 1;
 
     // Start is called before the first frame update
     void Start()
@@ -30,22 +30,40 @@ public class FollowPath : SteeringAbstract
         if (last_target_position != target.transform.position)
         {
             NavMesh.CalculatePath(transform.position,target.transform.position, NavMesh.AllAreas,path);
-            index = 0;
-            waypoint = path.corners[index];
+
+            if (path.corners.Length != 0)
+            {
+                index = 1;
+                waypoint = path.corners[index];
+            }
             
             last_target_position = target.transform.position;
         }
 
 
-        if (Mathf.Abs((waypoint - transform.position).magnitude) > Min_distance)
-            seek.Steer(waypoint);
-        else
+        if (path != null && path.corners.Length != 0)
         {
-            index++;
+            if (path.corners.Length > 2)
+            {
+                if(Mathf.Abs((transform.position - waypoint).magnitude) < Min_distance)
+                {
+                    index++;
 
-            if (index < path.corners.Length)
-            waypoint = path.corners[index];
+                    if (index < path.corners.Length)
+                        waypoint = path.corners[index];
+                }
+
+            }
+
+            seek.Steer(waypoint, priority);
         }
 
+    }
+
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(waypoint, 1);
     }
 }

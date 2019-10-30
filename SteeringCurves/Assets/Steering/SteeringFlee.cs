@@ -3,7 +3,6 @@ using System.Collections;
 
 public class SteeringFlee : SteeringAbstract
 {
-
     Move move;
 
     // Use this for initialization
@@ -20,9 +19,7 @@ public class SteeringFlee : SteeringAbstract
 
     public void Steer(Vector3 target)
     {
-        // TODO 2: Same as Steering seek but opposite direction
         Vector3 velocity = ((move.target.transform.position - transform.position) * move.max_mov_acceleration);
-
         move.AccelerateMovement(-velocity,priority);
     }
 }

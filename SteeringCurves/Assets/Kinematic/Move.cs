@@ -27,38 +27,37 @@ public class Move : MonoBehaviour
 
         rotation_speed = new float[5];
         rotation_speed.Initialize();
-
     }
 
     // Methods for behaviours to set / add velocities
     public void SetMovementVelocity (Vector3 velocity) 
 	{
-        current_velocity = velocity;
+        velocity.y = 0.0f;
+
+        for (int i = 0; i < movement_velocity.Length; ++i)
+        {
+            movement_velocity[i] = velocity;
+        }
     }
 
 	public void AccelerateMovement (Vector3 acceleration, int priority) 
 	{
-        current_velocity += acceleration;
-        movement_velocity.SetValue(current_velocity, priority);
+        acceleration.y = 0.0f;
+
+        movement_velocity[priority] += acceleration;
     }
 
 	public void SetRotationVelocity (float _rotation_speed) 
 	{
-        current_rotation_speed = _rotation_speed;
-
         for (int i = 0; i < rotation_speed.Length; ++i)
         {
-            if (!Mathf.Approximately(rotation_speed[i], 0.0f))
-            {
-                rotation_speed[i] = current_rotation_speed;
-            }
+                rotation_speed[i] = _rotation_speed;          
         }
     }
 
 	public void AccelerateRotation (float rotation_acceleration, int priority) 
 	{
-        current_rotation_speed += rotation_acceleration;
-        rotation_speed.SetValue(current_rotation_speed, priority);
+        rotation_speed[priority] += rotation_acceleration; 
     }
 	
 	// Update is called once per frame
@@ -85,11 +84,11 @@ public class Move : MonoBehaviour
             }
         }
 
-            // cap velocity
-        if (current_velocity.magnitude > max_mov_speed)
-		{
-            current_velocity = current_velocity.normalized * max_mov_speed;
-		}
+        // cap velocity
+  //      if (current_velocity.magnitude > max_mov_speed)
+		//{
+  //          current_velocity = current_velocity.normalized * max_mov_speed;
+		//}
 
         // cap rotation
         current_rotation_speed = Mathf.Clamp(current_rotation_speed, -max_rot_speed, max_rot_speed);
@@ -107,8 +106,11 @@ public class Move : MonoBehaviour
 		// finally move
 		transform.position += current_velocity * Time.deltaTime;
 
-        // --- Reset velocities array ---
-        movement_velocity.Initialize();
-        rotation_speed.Initialize();
+        // --- Reset velocities ---
+        for (int i = 0; i < movement_velocity.Length; ++i)
+        {
+            movement_velocity[i] = Vector3.zero;
+            rotation_speed[i] = 0.0f;
+        }
 	}
 }

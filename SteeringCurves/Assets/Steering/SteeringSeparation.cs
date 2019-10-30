@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class SteeringSeparation : SteeringAbstract
 {
@@ -7,26 +8,26 @@ public class SteeringSeparation : SteeringAbstract
     public LayerMask mask;
     public float search_radius = 5.0f;
     public AnimationCurve strength;
+    private List<Collider> Colliders;
 
     Move move;
 
     // Use this for initialization
     void Start()
     {
+        Colliders = new List<Collider>();
         move = GetComponent<Move>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        // TODO 1: Agents much separate from each other:
-        // 1- Find other agents in the vicinity (use a layer for all agents)
-        Collider[] Colliders = Physics.OverlapSphere(transform.position, search_radius, mask);
-        // 2- For each of them calculate a escape vector using the AnimationCurve
-
+        // --- Fill Colliders list with all agents of the given mask inside the sphere ---
+        Colliders.AddRange(Physics.OverlapSphere(transform.position, search_radius, mask));
         Vector3 Desired_acceleration = Vector3.zero;
 
-        for (int i = 0; i < Colliders.Length; ++i)
+        // --- Iterate list and compute separation vectors ---
+        for (int i = 0; i < Colliders.Count; ++i)
         {
             GameObject GO = Colliders[i].gameObject;
 
@@ -40,10 +41,10 @@ public class SteeringSeparation : SteeringAbstract
             // --- Find Separation Acceleration strength using the curve ---
             float Acceleration = (1.0f - strength.Evaluate(distance.magnitude / search_radius)) * move.max_mov_acceleration;
 
-            // 3- Sum up all vectors and trim down to maximum acceleration
+            // --- Sum all separation vectors to have a final acceleration ---
             Desired_acceleration += distance.normalized * Acceleration;
         }
-        // 3- Trim down to maximum acceleration
+        // --- 
         if (Desired_acceleration.magnitude > 0.0f)
         {
             if (Desired_acceleration.magnitude > move.max_mov_acceleration)
@@ -51,6 +52,8 @@ public class SteeringSeparation : SteeringAbstract
 
             move.AccelerateMovement(Desired_acceleration, priority);
         }
+
+        Colliders.Clear();
     }
 
     void OnDrawGizmosSelected()
