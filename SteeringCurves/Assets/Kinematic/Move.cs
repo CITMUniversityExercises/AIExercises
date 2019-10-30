@@ -33,6 +33,7 @@ public class Move : MonoBehaviour
     public void SetMovementVelocity (Vector3 velocity) 
 	{
         velocity.y = 0.0f;
+        current_velocity = velocity;
 
         for (int i = 0; i < movement_velocity.Length; ++i)
         {

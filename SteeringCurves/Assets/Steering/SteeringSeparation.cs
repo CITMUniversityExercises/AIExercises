@@ -47,10 +47,7 @@ public class SteeringSeparation : SteeringAbstract
         // --- 
         if (Desired_acceleration.magnitude > 0.0f)
         {
-            if (Desired_acceleration.magnitude > move.max_mov_acceleration)
-                Desired_acceleration = Desired_acceleration.normalized * move.max_mov_acceleration;
-
-            move.AccelerateMovement(Desired_acceleration, priority);
+                move.AccelerateMovement(Desired_acceleration, priority);        
         }
 
         Colliders.Clear();

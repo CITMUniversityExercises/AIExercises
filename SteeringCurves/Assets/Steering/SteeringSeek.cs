@@ -24,7 +24,7 @@ public class SteeringSeek : SteeringAbstract
             move = GetComponent<Move>();
         }
 
-        Vector3 velocity = ((target - transform.position).normalized * move.max_mov_acceleration);
+        Vector3 velocity = ((target - transform.position));
 
         move.AccelerateMovement(velocity,given_priority);
 
