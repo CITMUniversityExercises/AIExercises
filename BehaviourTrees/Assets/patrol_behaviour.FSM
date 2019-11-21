@@ -1,0 +1,234 @@
+{
+    "version": 2.85,
+    "type": "NodeCanvas.StateMachines.FSM",
+    "translation": {
+        "x": -3716.0,
+        "y": -3696.0
+    },
+    "zoomFactor": 0.7500095,
+    "nodes": [
+        {
+            "_actionList": {
+                "executionMode": "ActionsRunInParallel",
+                "actions": [
+                    {
+                        "path": 1,
+                        "$type": "BT_Patrol"
+                    }
+                ]
+            },
+            "_position": {
+                "x": 5673.0,
+                "y": 5367.0
+            },
+            "_name": "Patrol",
+            "$type": "NodeCanvas.StateMachines.ActionState",
+            "$id": "2"
+        },
+        {
+            "_actionList": {
+                "actions": [
+                    {
+                        "valueA": {
+                            "_name": "Patrol Pos",
+                            "_targetVariableID": "73be4cc0-75d5-4569-8f89-730c5abaa8e8"
+                        },
+                        "valueB": {
+                            "_name": "_currentpos",
+                            "_targetVariableID": "c25753a2-0e18-469e-b784-e758c930b0c9"
+                        },
+                        "$type": "NodeCanvas.Tasks.Actions.SetVector3"
+                    },
+                    {
+                        "target": {
+                            "_value": 2
+                        },
+                        "speed": {
+                            "_value": 3.0
+                        },
+                        "keepDistance": {
+                            "_value": 0.1
+                        },
+                        "$type": "NodeCanvas.Tasks.Actions.MoveToGameObject"
+                    }
+                ]
+            },
+            "_position": {
+                "x": 5846.0,
+                "y": 5462.0
+            },
+            "_name": "Chase",
+            "$type": "NodeCanvas.StateMachines.ActionState",
+            "$id": "6"
+        },
+        {
+            "_actionList": {
+                "executionMode": "ActionsRunInParallel",
+                "actions": [
+                    {
+                        "target": {
+                            "_value": 2
+                        },
+                        "speed": {
+                            "_value": 4.0
+                        },
+                        "fledDistance": {
+                            "_value": 20.0
+                        },
+                        "lookAhead": {
+                            "_value": 1.0
+                        },
+                        "$type": "NodeCanvas.Tasks.Actions.Flee"
+                    }
+                ]
+            },
+            "_position": {
+                "x": 6235.0,
+                "y": 5410.0
+            },
+            "_name": "Flee",
+            "$type": "NodeCanvas.StateMachines.ActionState",
+            "$id": "16"
+        },
+        {
+            "_actionList": {
+                "actions": [
+                    {
+                        "target": {
+                            "_value": 3
+                        },
+                        "speed": {
+                            "_value": 3.0
+                        },
+                        "keepDistance": {
+                            "_value": 0.1
+                        },
+                        "overrideAgent": {
+
+                        },
+                        "$type": "NodeCanvas.Tasks.Actions.MoveToGameObject"
+                    }
+                ]
+            },
+            "_transitionEvaluation": "CheckAfterStateFinished",
+            "_position": {
+                "x": 6047.0,
+                "y": 5215.0
+            },
+            "_name": "Go to Alarm",
+            "$type": "NodeCanvas.StateMachines.ActionState",
+            "$id": "24"
+        },
+        {
+            "_actionList": {
+                "executionMode": "ActionsRunInParallel",
+                "actions": [
+                    {
+                        "targetPosition": {
+                            "_name": "Patrol Pos",
+                            "_targetVariableID": "73be4cc0-75d5-4569-8f89-730c5abaa8e8"
+                        },
+                        "speed": {
+                            "_value": 3.0
+                        },
+                        "keepDistance": {
+                            "_value": 0.1
+                        },
+                        "$type": "NodeCanvas.Tasks.Actions.MoveToPosition"
+                    }
+                ]
+            },
+            "_position": {
+                "x": 5864.0,
+                "y": 5079.0
+            },
+            "_name": "Back to Patrol",
+            "$type": "NodeCanvas.StateMachines.ActionState",
+            "$id": "32"
+        }
+    ],
+    "connections": [
+        {
+            "_condition": {
+                "valueA": {
+                    "_name": "player_detected",
+                    "_targetVariableID": "1b11baf2-bc44-4b32-9777-51a09f1772b0"
+                },
+                "valueB": {
+                    "_value": true
+                },
+                "$type": "NodeCanvas.Tasks.Conditions.CheckBoolean"
+            },
+            "_sourceNode": {
+                "$ref": "2"
+            },
+            "_targetNode": {
+                "$ref": "6"
+            },
+            "$type": "NodeCanvas.StateMachines.FSMConnection"
+        },
+        {
+            "_condition": {
+                "target": {
+
+                },
+                "maxDistance": {
+                    "_value": 50.0
+                },
+                "awarnessDistance": {
+
+                },
+                "viewAngle": {
+                    "_value": 70.0
+                },
+                "overrideAgent": {
+
+                },
+                "$type": "NodeCanvas.Tasks.Conditions.CanSeeTarget"
+            },
+            "_sourceNode": {
+                "$ref": "6"
+            },
+            "_targetNode": {
+                "$ref": "16"
+            },
+            "$type": "NodeCanvas.StateMachines.FSMConnection"
+        },
+        {
+            "_sourceNode": {
+                "$ref": "16"
+            },
+            "_targetNode": {
+                "$ref": "24"
+            },
+            "$type": "NodeCanvas.StateMachines.FSMConnection"
+        },
+        {
+            "_sourceNode": {
+                "$ref": "24"
+            },
+            "_targetNode": {
+                "$ref": "32"
+            },
+            "$type": "NodeCanvas.StateMachines.FSMConnection"
+        },
+        {
+            "_sourceNode": {
+                "$ref": "32"
+            },
+            "_targetNode": {
+                "$ref": "2"
+            },
+            "$type": "NodeCanvas.StateMachines.FSMConnection"
+        }
+    ],
+    "primeNode": {
+        "$ref": "2"
+    },
+    "localBlackboard": {
+        "_name": "Local Blackboard",
+        "_variables": {
+
+        }
+    }
+}
